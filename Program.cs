@@ -21,6 +21,8 @@ namespace TableGenerator
                 };
 
                 context.Products.Add(product);
+
+                context.SaveChanges();
             }
         }
     }
