@@ -1,8 +1,6 @@
 ﻿namespace TableGenerator.DataFolder
 {
-    using System;
     using System.Data.Entity;
-    using System.Linq;
 
     public class ProductContext : DbContext
     {

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TableGenerator.DataFolder;
 
 namespace TableGenerator
@@ -11,18 +7,11 @@ namespace TableGenerator
     {
         static void Main(string[] args)
         {
-            try
-            {
-                var products = GenerateProducts();
+            var products = GenerateProducts();
 
-                CreateProductsTable();
+            CreateProductTable();
 
-                FillProductTable(products);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+            FillProductTable(products);
         }
 
         public static Product[] GenerateProducts()
@@ -52,12 +41,12 @@ namespace TableGenerator
             }
         }
 
-        public static void CreateProductsTable()
+        public static void CreateProductTable()
         {
             try
             {
                 var query =
-                    "CREATE TABLE 'Products'(" +
+                    "CREATE TABLE IF NOT EXISTS 'Products'(" +
                     "'Id'    INTEGER NOT NULL UNIQUE," +
                     "'Name'  TEXT NOT NULL," +
                     "'Price' REAL NOT NULL," +
@@ -66,6 +55,8 @@ namespace TableGenerator
                 using (var context = new ProductContext())
                 {
                     context.Database.ExecuteSqlCommand(query);
+
+                    var name = context.Database.Connection.Database;
 
                     context.SaveChanges();
                 }
@@ -89,6 +80,13 @@ namespace TableGenerator
 
                 using ( var context = new ProductContext())
                 {
+                    if(context.Products == null)
+                    {
+                        Console.WriteLine("Таблицы не существует");
+
+                        return;
+                    }
+
                     context.Products.AddRange(products);
 
                     context.SaveChanges();
